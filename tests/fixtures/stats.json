@@ -1,0 +1,41 @@
+{
+  "user": "ci-fixture",
+  "name": "CI Fixture",
+  "emails": [],
+  "repo_contributions": 2,
+  "issue_contributions": 3,
+  "commit_contributions": 1000,
+  "pr_contributions": 4,
+  "review_contributions": 5,
+  "repositories": [
+    {
+      "name": "ci/public",
+      "stars": 17,
+      "forks": 3,
+      "languages": [
+        {
+          "name": "Zig",
+          "size": 300,
+          "color": "#f7a41d"
+        },
+        {
+          "name": "Python",
+          "size": 100,
+          "color": "#3572a5"
+        }
+      ],
+      "lines_changed": 1200,
+      "views": 20,
+      "private": false
+    },
+    {
+      "name": "ci/private",
+      "stars": 4,
+      "forks": 1,
+      "languages": null,
+      "lines_changed": 50,
+      "views": 6,
+      "private": true
+    }
+  ]
+}
