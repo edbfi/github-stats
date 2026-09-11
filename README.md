@@ -1,15 +1,21 @@
 # [GitHub Stats Visualization](https://github.com/jstrieb/github-stats)
 
+This installation generates statistics solely for `edbfi`. The manually dispatched
+workflow accepts only an `edbfi` token (numeric account ID `326875205`) supplied as
+`STATS_READ_TOKEN` and collects owned repositories only. It never uses another
+account's token or exclusion settings. Only the two SVGs are published; raw
+statistics remain private. Upstream documentation and attribution follow below.
+
 <!--
 https://github.community/t/support-theme-context-for-images-in-light-vs-dark-mode/147981/84
 -->
 
 <div align="center">
 <a href="https://github.com/jstrieb/github-stats">
-<img src="https://github.com/jstrieb/github-stats/blob/generated/overview.svg#gh-dark-mode-only" />
-<img src="https://github.com/jstrieb/github-stats/blob/generated/languages.svg#gh-dark-mode-only" />
-<img src="https://github.com/jstrieb/github-stats/blob/generated/overview.svg#gh-light-mode-only" />
-<img src="https://github.com/jstrieb/github-stats/blob/generated/languages.svg#gh-light-mode-only" />
+<img src="https://raw.githubusercontent.com/edbfi/github-stats/generated/overview.svg#gh-dark-mode-only" />
+<img src="https://raw.githubusercontent.com/edbfi/github-stats/generated/languages.svg#gh-dark-mode-only" />
+<img src="https://raw.githubusercontent.com/edbfi/github-stats/generated/overview.svg#gh-light-mode-only" />
+<img src="https://raw.githubusercontent.com/edbfi/github-stats/generated/languages.svg#gh-light-mode-only" />
 </a>
 </div>
 

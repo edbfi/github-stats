@@ -1,15 +1,11 @@
 name: Generate Stats Images
 
 on:
-  push:
-    branches: 
-      - master
-  schedule:
-    - cron: "5 0 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: generated-statistics
@@ -17,14 +13,30 @@ concurrency:
 
 defaults:
   run:
-    shell: bash -euxo pipefail {0}
+    shell: bash -euo pipefail {0}
 
 jobs:
   build:
-    if: github.ref_name == github.event.repository.default_branch
+    if: github.repository == 'edbfi/github-stats' && github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
+    - name: Require successful final-revision CI
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
+      run: |
+        result=$(gh run list --workflow ci.yml --branch master --event push --commit "$GITHUB_SHA" --json conclusion --jq 'any(.[]; .conclusion == "success")')
+        test "$result" = true
+
+    - name: Verify statistics identity
+      env:
+        GH_TOKEN: ${{ secrets.STATS_READ_TOKEN }}
+      run: |
+        test -n "$GH_TOKEN"
+        gh api user --jq 'select(.id == 326875205 and .login == "edbfi") | .login' > "$RUNNER_TEMP/stats-user"
+        test "$(cat "$RUNNER_TEMP/stats-user")" = edbfi
+
     - uses: actions/checkout@v7.0.1
       with:
         ref: ${{ github.event.repository.default_branch }}
@@ -55,9 +67,7 @@ jobs:
       run: |
         ./zig-out/bin/github-stats
       env:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        EXCLUDE_REPOS: ${{ secrets.EXCLUDE_REPOS }}
-        EXCLUDE_LANGS: ${{ secrets.EXCLUDE_LANGS }}
+        ACCESS_TOKEN: ${{ secrets.STATS_READ_TOKEN }}
         EXCLUDE_PRIVATE: "false"
         OWNED_REPOS_ONLY: "true"
         SILENT: "true"

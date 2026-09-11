@@ -16,7 +16,7 @@ explicit PR dispatches are checked against the live PR SHA. Development tokens
 are read-only and action references use full version tags. Renovate inherits the
 shared versioned base policy and tracks Zig/action versions.
 
-Scheduled statistics still use the configured token to collect live statistics
+Manually dispatched statistics verify the dedicated edbfi token before collecting live statistics
 and publish only the two output SVGs to `generated`. They never write `master`.
 The writer now fetches that branch explicitly, serializes runs and treats commit
 or push errors as failures. Tag-only release builds retain their cross-target
@@ -24,7 +24,10 @@ matrix and use the repository token with contents permission. Normal CI provides
 native coverage, not execution of every cross-compiled release target or live API
 behavior. Upstream attribution is unchanged.
 
-Require strict up-to-date `ci / required` from GitHub Actions on `master`, enforce
-administrators, disallow force pushes/deletions, and require no blanket review.
-The output branch is intentionally separate. Automerge stays off until protection
-and shared-policy readiness are verified.
+No branch protections or rulesets are configured. Automerge is disabled.
+Review the exact head/base, full diff, author/DCO, every expected CI job and
+relevant artifacts before merging through the maintainer's `ghmerge` function.
+
+Generation uses `STATS_READ_TOKEN` and accepts only edbfi/326875205, with
+`OWNED_REPOS_ONLY` enabled. Daily scheduling is held until the first edbfi run
+has passed review; inherited token and exclusion secrets are not consumed.
