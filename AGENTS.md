@@ -28,7 +28,7 @@ Match the surrounding call signatures rather than recalling pre-0.16 idioms.
 | `zig build test` | Runs the suite (root module `src/main.zig`) |
 | `zig test src/glob.zig --test-filter match` | One file / one test |
 | `zig build release` | Cross-compiles ~50 targets at `ReleaseFast`; tag workflow only |
-| `zig fmt src build.zig` | Formats; no CI job checks this |
+| `zig fmt src build.zig` | Formats; CI checks formatting |
 
 `build.zig` wires `b.args` only into the `run` step, so `zig build test` takes no
 `--test-filter`; drop to bare `zig test <file>` for a single test. That works for
@@ -119,8 +119,10 @@ in Zig, so per-language markup lives in `main.zig`, not the SVG.
   allows, `statistics.zig` calls `git.getLinesChanged`, which bare-clones the
   repo with the access token embedded in the URL. `main.yml` sets
   `MAX_RETRIES: 5` (the built-in default is 25) to reach that fallback quickly.
-- **CI never runs the tests.** `.github/workflows/main.yml` runs `zig build`
-  then the binary. Run `zig build test` yourself before pushing.
+- `.github/workflows/ci.yml` runs formatting, tests, build and offline JSON/SVG
+  smoke on every PR/default-branch push. Run `bash .github/scripts/check.sh`
+  locally with Zig 0.16.0; see `CI.md`. Manually dispatched image generation remains a
+  separate writer to `generated`.
 - **Generated SVGs do not belong on `master`.** The workflow checks out the
   `generated` branch before running the binary and commits `overview.svg` and
   `languages.svg` there. `src/templates/*.svg` are the sources.
