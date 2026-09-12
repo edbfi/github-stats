@@ -1,6 +1,6 @@
 # [GitHub Stats Visualization](https://github.com/jstrieb/github-stats)
 
-This installation generates statistics solely for `edbfi`. The manually dispatched
+This installation generates statistics solely for `edbfi`. The daily or manually dispatched
 workflow accepts only an `edbfi` token (numeric account ID `326875205`) supplied as
 `STATS_READ_TOKEN` and collects owned repositories only. It never uses another
 account's token or exclusion settings. Only the two SVGs are published; raw
