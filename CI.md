@@ -18,15 +18,19 @@ shared versioned base policy and tracks Zig/action versions.
 
 Daily or manually dispatched statistics verify the dedicated edbfi token before collecting live statistics
 and publish only the two output SVGs to `generated`. They never write `master`.
-The writer now fetches that branch explicitly, serializes runs and treats commit
+The writer accepts successful exact-revision CI from a push or explicit dispatch.
+It fetches that branch explicitly, serializes runs and treats commit
 or push errors as failures. Tag-only release builds retain their cross-target
 matrix and use the repository token with contents permission. Normal CI provides
 native coverage, not execution of every cross-compiled release target or live API
 behavior. Upstream attribution is unchanged.
 
-No branch protections or rulesets are configured. Automerge is disabled.
-Review the exact head/base, full diff, author/DCO, every expected CI job and
-relevant artifacts before merging through the maintainer's `ghmerge` function.
+Renovate updates merge automatically after every required CI job passes
+on the current revision, including major and shared-policy updates. The checked
+merge action verifies genuine author sign-offs and dispatches final CI for the
+exact merged commit. No dashboard approval, branch protections or rulesets are
+configured; native GitHub automerge stays disabled. Other changes retain full
+manual review and the maintainer's `ghmerge` process.
 
 Generation uses `STATS_READ_TOKEN` and accepts only edbfi/326875205, with
 `OWNED_REPOS_ONLY` enabled. Daily refresh runs at 00:05 UTC after the initial edbfi run passed review;
