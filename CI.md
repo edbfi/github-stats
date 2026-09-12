@@ -18,7 +18,8 @@ shared versioned base policy and tracks Zig/action versions.
 
 Daily or manually dispatched statistics verify the dedicated edbfi token before collecting live statistics
 and publish only the two output SVGs to `generated`. They never write `master`.
-The writer now fetches that branch explicitly, serializes runs and treats commit
+The writer accepts successful exact-revision CI from a push or explicit dispatch.
+It fetches that branch explicitly, serializes runs and treats commit
 or push errors as failures. Tag-only release builds retain their cross-target
 matrix and use the repository token with contents permission. Normal CI provides
 native coverage, not execution of every cross-compiled release target or live API

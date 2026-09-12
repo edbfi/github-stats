@@ -28,7 +28,7 @@ jobs:
         GH_TOKEN: ${{ github.token }}
         GH_REPO: ${{ github.repository }}
       run: |
-        result=$(gh run list --workflow ci.yml --branch master --event push --commit "$GITHUB_SHA" --json conclusion --jq 'any(.[]; .conclusion == "success")')
+        result=$(gh run list --workflow ci.yml --branch master --commit "$GITHUB_SHA" --json conclusion,event,status --jq 'map(select(.event == "push" or .event == "workflow_dispatch")) | first | .status == "completed" and .conclusion == "success"')
         test "$result" = true
 
     - name: Verify statistics identity
