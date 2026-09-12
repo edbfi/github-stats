@@ -16,7 +16,7 @@ explicit PR dispatches are checked against the live PR SHA. Development tokens
 are read-only and action references use full version tags. Renovate inherits the
 shared versioned base policy and tracks Zig/action versions.
 
-Manually dispatched statistics verify the dedicated edbfi token before collecting live statistics
+Daily or manually dispatched statistics verify the dedicated edbfi token before collecting live statistics
 and publish only the two output SVGs to `generated`. They never write `master`.
 The writer now fetches that branch explicitly, serializes runs and treats commit
 or push errors as failures. Tag-only release builds retain their cross-target
@@ -29,5 +29,5 @@ Review the exact head/base, full diff, author/DCO, every expected CI job and
 relevant artifacts before merging through the maintainer's `ghmerge` function.
 
 Generation uses `STATS_READ_TOKEN` and accepts only edbfi/326875205, with
-`OWNED_REPOS_ONLY` enabled. Daily scheduling is held until the first edbfi run
-has passed review; inherited token and exclusion secrets are not consumed.
+`OWNED_REPOS_ONLY` enabled. Daily refresh runs at 00:05 UTC after the initial edbfi run passed review;
+inherited token and exclusion secrets are not consumed.

@@ -121,7 +121,7 @@ in Zig, so per-language markup lives in `main.zig`, not the SVG.
   `MAX_RETRIES: 5` (the built-in default is 25) to reach that fallback quickly.
 - `.github/workflows/ci.yml` runs formatting, tests, build and offline JSON/SVG
   smoke on every PR/default-branch push. Run `bash .github/scripts/check.sh`
-  locally with Zig 0.16.0; see `CI.md`. Manually dispatched image generation remains a
+  locally with Zig 0.16.0; see `CI.md`. Daily or manually dispatched image generation remains a
   separate writer to `generated`.
 - **Generated SVGs do not belong on `master`.** The workflow checks out the
   `generated` branch before running the binary and commits `overview.svg` and
