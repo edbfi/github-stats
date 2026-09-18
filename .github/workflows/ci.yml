@@ -38,7 +38,7 @@ jobs:
     needs: guard
     uses: edbfi/automation/.github/workflows/zig.yml@v2.0.0
     with:
-      # renovate: datasource=zig-version depName=zig
+      # renovate: datasource=git-tags depName=https://codeberg.org/ziglang/zig.git
       version: '0.16.0'
       command: bash .github/scripts/check.sh
   required:
