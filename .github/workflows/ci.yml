@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-26.04
     timeout-minutes: 5
     steps:
-      - uses: edbfi/automation/actions/dispatch-guard@v3.0.1
+      - uses: edbfi/automation/actions/dispatch-guard@v3.1.0
         with:
           token: ${{ github.token }}
           pr-number: ${{ inputs.pr-number }}
@@ -36,7 +36,7 @@ jobs:
           expected-default-sha: ${{ inputs.expected-default-sha }}
   zig:
     needs: guard
-    uses: edbfi/automation/.github/workflows/zig.yml@v3.0.1
+    uses: edbfi/automation/.github/workflows/zig.yml@v3.1.0
     with:
       # renovate: datasource=git-tags depName=https://codeberg.org/ziglang/zig.git
       version: '0.16.0'
@@ -48,13 +48,13 @@ jobs:
     runs-on: ubuntu-26.04
     timeout-minutes: 5
     steps:
-      - uses: edbfi/automation/actions/dispatch-guard@v3.0.1
+      - uses: edbfi/automation/actions/dispatch-guard@v3.1.0
         with:
           token: ${{ github.token }}
           pr-number: ${{ inputs.pr-number }}
           expected-head-sha: ${{ inputs.expected-head-sha }}
           expected-default-sha: ${{ inputs.expected-default-sha }}
-      - uses: edbfi/automation/actions/gate@v3.0.1
+      - uses: edbfi/automation/actions/gate@v3.1.0
         with:
           needs: ${{ toJSON(needs) }}
           required: guard zig
