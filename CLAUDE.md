@@ -45,5 +45,5 @@ Release: bump `.version` in `build.zig.zon`, then push a tag. `release.yml` runs
 ## CI and policy
 
 - `CI.md`: what CI, the stats refresh, Renovate, and PR policy each enforce. Read it before touching `.github/workflows/` or `renovate.json`.
-- The CI and PR-policy logic lives in the external `edbfi/automation` repo at `v3.0.1`. The local workflows only call it; the checks themselves live there.
+- The CI and PR-policy logic lives in the external `edbfi/automation` repo at `v4.0.0`. The local workflows only call it; the checks themselves live there.
 - PRs need a Conventional Commit title and a `Signed-off-by` matching the author (`git commit -s`).
