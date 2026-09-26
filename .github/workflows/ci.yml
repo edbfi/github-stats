@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   zig:
-    uses: edbfi/automation/.github/workflows/zig.yml@v4.0.0
+    uses: edbfi/automation/.github/workflows/zig.yml@v4.1.0
     with:
       # renovate: datasource=git-tags depName=https://codeberg.org/ziglang/zig.git
       version: '0.16.0'
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-26.04
     timeout-minutes: 5
     steps:
-      - uses: edbfi/automation/actions/gate@v4.0.0
+      - uses: edbfi/automation/actions/gate@v4.1.0
         with:
           needs: ${{ toJSON(needs) }}
           required: zig
