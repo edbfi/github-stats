@@ -17,11 +17,11 @@ Zig 0.16.0 CLI (fork of `jstrieb/github-stats`) that collects GitHub statistics 
 - Every field of `Args` in `src/main.zig` is read from a `--kebab-case` flag and also from any environment variable of the same name, case-insensitive (`DEBUG`, `SILENT`, `VERSION`, `ACCESS_TOKEN`, ...). The flag wins over the env var. A boolean env var is true for any non-empty value except `false`. When you spawn the binary in tests, pass a minimal env.
 - `{{ name }}` placeholders in `src/templates/*.svg` must match field names of the struct passed to `template.fill`: the `aggregate_stats` struct in `main.zig` for overview, `lang_list`/`progress` for languages. An unknown name fails at runtime with `error.InvalidField`, not at compile time. Templates are `@embedFile`d, so rebuild after editing them.
 - The JSON output schema is the `Statistics`/`Repository`/`Language` structs in `src/statistics.zig`. `tests/fixtures/stats.json` is a sample of that output (used by the offline run), so any field you add, remove, or rename there must be applied to the fixture too.
-- Repository data comes from two separate GraphQL queries: `getOwnedRepos` (used in production, since `OWNED_REPOS_ONLY: "true"` in `main.yml`) and `getReposByYear`. Both feed `addRepository`, so a new repo field must be added to both queries and both parse structs. In owned-only mode only `commit_contributions` is filled, from default-branch history counts.
+- Repository data comes from two separate GraphQL queries: `getOwnedRepos` (used when `OWNED_REPOS_ONLY` is true, as for the `edbfi` SVGs) and `getReposByYear`. Both feed `addRepository`, so a new repo field must be added to both queries and both parse structs. In owned-only mode only `commit_contributions` is filled, from default-branch history counts.
 - `Statistics` data is gpa-owned and freed by hand. A new slice field needs matching frees in `deinit` and in the `errdefer` chains in `addRepository`/`getRepos`.
 - The caller owns `HttpClient` response bodies (`defer client.allocator.free(response.body)`), even though the header comment in `src/http_client.zig` says otherwise.
 - `build.zig` imports `src/git.zig` (`isInstalled`, `currentCommit`) to stamp the version, so changing those signatures breaks the build script itself.
-- Generated SVGs belong only on the `generated` branch, which `main.yml` writes; never commit them to `master`. That workflow and the `README.md` banner are specific to `edbfi` (`STATS_READ_TOKEN`, account ID `326875205`). The README's installation section (`ACCESS_TOKEN`, `EXCLUDE_*` secrets) is upstream documentation this installation doesn't use.
+- Generated SVGs belong only on the `generated` branch; never commit them to `master`. No workflow regenerates them at the moment. The `README.md` banner is specific to `edbfi`. The README's installation section (`ACCESS_TOKEN`, `EXCLUDE_*` secrets) is upstream documentation this installation doesn't use.
 - Keep the upstream `jstrieb` attribution (the `--version` text, README links) unchanged.
 
 ## Workflows
@@ -38,7 +38,7 @@ Add an overview statistic:
 3. Add `{{ field }}` to `src/templates/overview.svg`.
 4. Update `tests/fixtures/stats.json`.
 
-Release: bump `.version` in `build.zig.zon`, then push a tag. `release.yml` runs `zig build release` (the cross-target list in `build.zig`) on any tag.
+Release: bump `.version` in `build.zig.zon`; `zig build release` builds the cross-target list in `build.zig`. No workflow publishes releases at the moment.
 
 ## Local validation
 
