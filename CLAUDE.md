@@ -43,6 +43,6 @@ Release: bump `.version` in `build.zig.zon`, then push a tag. `release.yml` runs
 
 ## Local validation
 
-See `CI.md` for local checks.
+Run `bash .github/scripts/check.sh` for local checks.
 
 - PRs need a Conventional Commit title and a `Signed-off-by` matching the author (`git commit -s`).
