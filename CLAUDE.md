@@ -30,7 +30,7 @@ Zig 0.16.0 CLI (fork of `jstrieb/github-stats`) that collects GitHub statistics 
 Add a CLI/env option (pattern from commit `6ebec24`):
 1. Add a field with a default to `Args` in `src/main.zig`. Supported types are `?[]const u8`, `bool`, and ints (`deinit` rejects other types at compile time). Flag and env parsing come for free from `src/argparse.zig`.
 2. Pass it through `main()` (for example into `Statistics.init` in `src/statistics.zig`).
-3. If production should use it, set it in the "Generate images" step env of `.github/workflows/main.yml`.
+3. Set the option in the environment or arguments when running the generator manually.
 4. Document it in the option list in `README.md`.
 
 Add an overview statistic:
@@ -41,6 +41,8 @@ Add an overview statistic:
 
 Release: bump `.version` in `build.zig.zon`, then push a tag. `release.yml` runs `zig build release` (the cross-target list in `build.zig`) on any tag.
 
-## CI and policy
+## Local validation
+
+See `CI.md` for local checks.
 
 - PRs need a Conventional Commit title and a `Signed-off-by` matching the author (`git commit -s`).
