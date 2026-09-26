@@ -1,9 +1,8 @@
 # [GitHub Stats Visualization](https://github.com/jstrieb/github-stats)
 
-This installation generates statistics solely for `edbfi`. The daily or manually dispatched
-workflow accepts only an `edbfi` token (numeric account ID `326875205`) supplied as
-`STATS_READ_TOKEN` and collects owned repositories only. It never uses another
-account's token or exclusion settings. Only the two SVGs are published; raw
+This installation generates statistics solely for `edbfi`, from owned repositories
+only. This repository currently has no workflows, so the SVGs on the `generated`
+branch are not regenerated automatically. Only the two SVGs are published; raw
 statistics remain private. Upstream documentation and attribution follow below.
 
 <!--
@@ -156,11 +155,11 @@ and retrieve the images.
      For example, to exclude all repos by user "jstrieb", add `jstrieb/*` to
      `EXCLUDE_REPOS`.
    - These can also be set directly in [the Actions
-     workflow](.github/workflows/main.yml), but you should set them as secrets
+     workflow](https://github.com/jstrieb/github-stats/blob/master/.github/workflows/main.yml), but you should set them as secrets
      if you want to keep the repository names or languages private.
    - Other configuration options can be set as environment variables or command
      line arguments by directly editing [the Actions
-     workflow](.github/workflows/main.yml).
+     workflow](https://github.com/jstrieb/github-stats/blob/master/.github/workflows/main.yml).
 1. Go to the [Actions
    page](../../actions?query=workflow%3A"Generate+Stats+Images") and click "Run
    Workflow" on the right side of the screen to generate images for the first
