@@ -22,7 +22,6 @@ Zig 0.16.0 CLI (fork of `jstrieb/github-stats`) that collects GitHub statistics 
 - `Statistics` data is gpa-owned and freed by hand. A new slice field needs matching frees in `deinit` and in the `errdefer` chains in `addRepository`/`getRepos`.
 - The caller owns `HttpClient` response bodies (`defer client.allocator.free(response.body)`), even though the header comment in `src/http_client.zig` says otherwise.
 - `build.zig` imports `src/git.zig` (`isInstalled`, `currentCommit`) to stamp the version, so changing those signatures breaks the build script itself.
-- The Zig version is pinned in `.github/workflows/ci.yml` (Renovate-annotated), `main.yml`, and `release.yml`, plus `minimum_zig_version` in `build.zig.zon`. Change all of them together.
 - Generated SVGs belong only on the `generated` branch, which `main.yml` writes; never commit them to `master`. That workflow and the `README.md` banner are specific to `edbfi` (`STATS_READ_TOKEN`, account ID `326875205`). The README's installation section (`ACCESS_TOKEN`, `EXCLUDE_*` secrets) is upstream documentation this installation doesn't use.
 - Keep the upstream `jstrieb` attribution (the `--version` text, README links) unchanged.
 
@@ -44,6 +43,4 @@ Release: bump `.version` in `build.zig.zon`, then push a tag. `release.yml` runs
 
 ## CI and policy
 
-- `CI.md`: what CI, the stats refresh, Renovate, and PR policy each enforce. Read it before touching `.github/workflows/` or `renovate.json`.
-- The CI and PR-policy logic lives in the external `edbfi/automation` repo at `v4.0.0`. The local workflows only call it; the checks themselves live there.
 - PRs need a Conventional Commit title and a `Signed-off-by` matching the author (`git commit -s`).
