@@ -1,9 +1,14 @@
 # [GitHub Stats Visualization](https://github.com/jstrieb/github-stats)
 
 This installation generates statistics solely for `edbfi`, from owned repositories
-only. This repository currently has no workflows, so the SVGs on the `generated`
-branch are not regenerated automatically. Only the two SVGs are published; raw
-statistics remain private. Upstream documentation and attribution follow below.
+only. No workflow regenerates the SVGs on the `generated` branch yet, so they are
+not updated automatically. Only the two SVGs are published; raw statistics
+remain private. Upstream documentation and attribution follow below.
+
+CI runs the checks in `.pre-commit-config.yaml` (including `zig fmt --check` and
+`zig build test`) with `prek run --all-files --hook-stage manual`, then
+`zig build` and `python3 scripts/smoke.py`, which replays
+`tests/fixtures/stats.json` offline and checks both SVGs.
 
 <!--
 https://github.community/t/support-theme-context-for-images-in-light-vs-dark-mode/147981/84
@@ -188,7 +193,7 @@ and retrieve the images.
 Using the `github-stats` CLI (available on the
 [releases](https://github.com/jstrieb/github-stats/releases/latest) page) to
 run locally, you can dump raw statistics data to a JSON file using the
-`--json-output-file` command-line argument. 
+`--json-output-file` command-line argument.
 
 ``` bash
 # Instructions for Linux. Change the filename at the end of the URL for macOS.
@@ -229,10 +234,10 @@ List all languages, sorted with most-used at the bottom.
 
 ``` bash
 jq --raw-output '
-  [.repositories[].languages[]] 
-    | group_by(.name) 
-    | sort_by([.[].size] | add) 
-    | .[] 
+  [.repositories[].languages[]]
+    | group_by(.name)
+    | sort_by([.[].size] | add)
+    | .[]
     | "\(.[0].name): \([.[].size] | add)"
 ' stats.json
 ```
