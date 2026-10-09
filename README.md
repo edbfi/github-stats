@@ -1,9 +1,10 @@
 # [GitHub Stats Visualization](https://github.com/jstrieb/github-stats)
 
 This installation generates statistics solely for `edbfi`, from owned repositories
-only. No workflow regenerates the SVGs on the `generated` branch yet, so they are
-not updated automatically. Only the two SVGs are published; raw statistics
-remain private. Upstream documentation and attribution follow below.
+only. `.github/workflows/generate.yml` regenerates the SVGs daily (and on
+manual dispatch) from the CI-green `master` commit and commits them to the
+`generated` branch only when they change. Only the two SVGs are published; raw
+statistics remain private. Upstream documentation and attribution follow below.
 
 CI runs the checks in `.pre-commit-config.yaml` (including `zig fmt --check` and
 `zig build test`) with `prek run --all-files --hook-stage manual`, then

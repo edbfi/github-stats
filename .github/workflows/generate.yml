@@ -1,0 +1,111 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Daily SVG generation (edbfi-ci design/d8.md rule 1). This job holds
+# STATS_READ_TOKEN and a contents: write token, so it is privileged
+# (design/security.md): no actions, containers, services or caches; Zig is
+# installed inline with a pinned SHA-256; the repo is fetched with plain git.
+# Bump ZIG_VERSION, ZIG_URL and ZIG_SHA256 together with build.zig.zon's
+# minimum_zig_version (https://ziglang.org/download/index.json, x86_64-linux).
+name: Generate Stats Images
+on:
+  schedule: [{ cron: "27 5 * * *" }]   # daily; minute unique per repo
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: generated-statistics
+  cancel-in-progress: false
+defaults: { run: { shell: "bash -euo pipefail {0}" } }
+jobs:
+  generate:
+    if: github.repository == 'edbfi/github-stats' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions: { contents: write, actions: read }   # push to generated; read CI runs
+    env:
+      REPO_URL: https://github.com/edbfi/github-stats.git
+    steps:
+      - name: Require successful CI for this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          # Any non-PR run of this commit counts (design/ci.md rule 12), so weekly revalidations
+          # of an unchanged master don't crowd out the push run.
+          result="$(gh run list --workflow ci.yml --branch master --commit "$GITHUB_SHA" --limit 100 --json conclusion,event,status \
+            --jq 'map(select(.event == "push" or .event == "schedule" or .event == "workflow_dispatch")) | first | .status == "completed" and .conclusion == "success"')"
+          test "$result" = true || { echo "::error::no successful push, scheduled or dispatch CI run for $GITHUB_SHA"; exit 1; }
+      - name: Verify statistics identity
+        env:
+          GH_TOKEN: ${{ secrets.STATS_READ_TOKEN }}
+        run: |
+          test -n "$GH_TOKEN"
+          login="$(gh api user --jq 'select(.id == 326875205 and .login == "edbfi") | .login')"
+          test "$login" = edbfi || { echo "::error::STATS_READ_TOKEN does not belong to edbfi"; exit 1; }
+      - name: Install Zig
+        env:
+          ZIG_VERSION: 0.16.0
+          ZIG_URL: https://ziglang.org/download/0.16.0/zig-x86_64-linux-0.16.0.tar.xz
+          ZIG_SHA256: 70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+        run: |
+          tarball="$(mktemp)"
+          curl -fsSL --proto '=https' --tlsv1.2 --retry 3 "$ZIG_URL" -o "$tarball"
+          echo "${ZIG_SHA256}  ${tarball}" | sha256sum -c -
+          mkdir -p "$RUNNER_TEMP/zig"
+          tar -xJf "$tarball" -C "$RUNNER_TEMP/zig" --strip-components=1
+          rm -f "$tarball"
+          test "$("$RUNNER_TEMP/zig/zig" version)" = "$ZIG_VERSION"
+      - name: Fetch this commit
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          auth="$(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 -w0)"
+          echo "::add-mask::$auth"
+          git init -q "$RUNNER_TEMP/src"
+          # The header lives only on this command line (design/security.md rule 8).
+          git -C "$RUNNER_TEMP/src" -c http.extraheader="AUTHORIZATION: basic $auth" fetch -q --depth 1 --no-tags "$REPO_URL" "$GITHUB_SHA"
+          git -C "$RUNNER_TEMP/src" checkout -q --detach FETCH_HEAD
+          test "$(git -C "$RUNNER_TEMP/src" rev-parse HEAD)" = "$GITHUB_SHA"
+          minimum="$(sed -n 's/^ *\.minimum_zig_version = "\(.*\)",$/\1/p' "$RUNNER_TEMP/src/build.zig.zon")"
+          test "$minimum" = "$("$RUNNER_TEMP/zig/zig" version)" || { echo "::error::build.zig.zon wants Zig $minimum; update ZIG_* in generate.yml"; exit 1; }
+      - name: Build
+        run: |
+          cd "$RUNNER_TEMP/src"
+          "$RUNNER_TEMP/zig/zig" build
+      - name: Generate images
+        env:
+          ACCESS_TOKEN: ${{ secrets.STATS_READ_TOKEN }}
+          EXCLUDE_PRIVATE: "false"
+          OWNED_REPOS_ONLY: "true"
+          SILENT: "true"
+          # Lower than the default 25 while the statistics API is flaky:
+          # https://github.com/orgs/community/discussions/192970
+          MAX_RETRIES: "5"
+        run: |
+          # The generator clones repositories into its working directory, so it
+          # runs in a scratch directory and only the two SVGs leave it.
+          mkdir -p "$RUNNER_TEMP/out"
+          cd "$RUNNER_TEMP/out"
+          "$RUNNER_TEMP/src/zig-out/bin/github-stats" --overview-output-file overview.svg --languages-output-file languages.svg
+          for svg in overview.svg languages.svg; do
+            test -s "$svg"
+            grep -q '<svg' "$svg"
+            if grep -q '{{' "$svg"; then echo "::error::$svg has an unresolved placeholder"; exit 1; fi
+          done
+      - name: Publish to the generated branch
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          auth="$(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 -w0)"
+          echo "::add-mask::$auth"
+          git -c http.extraheader="AUTHORIZATION: basic $auth" clone -q --depth 1 --single-branch --branch generated --no-tags "$REPO_URL" "$RUNNER_TEMP/generated"
+          cp "$RUNNER_TEMP/out/overview.svg" "$RUNNER_TEMP/out/languages.svg" "$RUNNER_TEMP/generated/"
+          cd "$RUNNER_TEMP/generated"
+          git add -- overview.svg languages.svg
+          if git diff --cached --quiet; then
+            echo "SVGs unchanged; nothing to publish"
+            exit 0
+          fi
+          test -z "$(git status --porcelain --untracked-files=all -- . ':!overview.svg' ':!languages.svg')"
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -q -s -m 'chore(stats): refresh generated images'
+          # Plain fast-forward push; the header lives only on this command line.
+          git -c http.extraheader="AUTHORIZATION: basic $auth" push -q "$REPO_URL" HEAD:refs/heads/generated
