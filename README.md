@@ -1,9 +1,11 @@
 # [GitHub Stats Visualization](https://github.com/jstrieb/github-stats)
 
 This installation generates statistics solely for `edbfi`, from owned repositories
-only. No workflow regenerates the SVGs on the `generated` branch yet, so they are
-not updated automatically. Only the two SVGs are published; raw statistics
-remain private. Upstream documentation and attribution follow below.
+only. `.github/workflows/generate.yml` regenerates the SVGs daily (and on
+manual dispatch) from the CI-green `master` commit and commits them to the
+`generated` branch only when they change. That branch holds only the two SVGs
+and the license; raw statistics stay private. Upstream documentation and
+attribution follow below.
 
 CI runs the checks in `.pre-commit-config.yaml` (including `zig fmt --check` and
 `zig build test`) with `prek run --all-files --hook-stage manual`, then
@@ -43,8 +45,8 @@ This project aims to collect a variety of profile and repository statistics
 using the GitHub API. It then generates images that can be displayed in
 repository READMEs, or in a user's [Profile
 README](https://docs.github.com/en/github/setting-up-and-managing-your-github-profile/managing-your-profile-readme).
-It also dumps all statistics to a JSON file that can be used for further data
-analysis.
+It can also dump all statistics to a JSON file (`--json-output-file`) for
+further data analysis; this installation doesn't.
 
 Since this project runs on GitHub Actions, no server is required to regularly
 regenerate the images with updated statistics. Likewise, since the user runs the
@@ -88,6 +90,11 @@ See [below](#analyzing-the-data) for tips.
 
 
 ## Installation
+
+These are upstream's instructions. This installation differs: its workflow,
+`.github/workflows/generate.yml`, reads the token from the `STATS_READ_TOKEN`
+secret and only runs as `edbfi/github-stats`. To set up your own, follow
+[upstream](https://github.com/jstrieb/github-stats#installation).
 
 To make your own statistics images: make a copy of this repository, make a
 GitHub API token, add the token to the repository, run the Actions workflow,
