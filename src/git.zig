@@ -89,6 +89,10 @@ pub fn getLinesChanged(
     const log_args = try std.mem.concat(allocator, []const u8, &.{
         &.{
             "git",
+            // The blob filter makes `log --numstat` fetch large blobs lazily;
+            // private repos need the header for that too.
+            "-c",
+            auth_header,
             "-C",
             repo_path,
             "log",
