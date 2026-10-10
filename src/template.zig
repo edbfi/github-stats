@@ -30,6 +30,35 @@ fn decimalToString(allocator: std.mem.Allocator, n: anytype) ![]const u8 {
     return result;
 }
 
+/// Escape XML's special characters in user data (account name, language names
+/// and colors) before it goes into an SVG as text or an attribute value.
+pub fn escape(a: std.mem.Allocator, s: []const u8) ![]const u8 {
+    var w = try std.Io.Writer.Allocating.initCapacity(a, s.len);
+    errdefer w.deinit();
+    for (s) |c| try w.writer.writeAll(switch (c) {
+        '&' => "&amp;",
+        '<' => "&lt;",
+        '>' => "&gt;",
+        '"' => "&quot;",
+        '\'' => "&apos;",
+        else => &.{c},
+    });
+    return try w.toOwnedSlice();
+}
+
+test escape {
+    const a = std.testing.allocator;
+    const escaped = try escape(a, "Tom & Jerry <\"F#\"> 'x'");
+    defer a.free(escaped);
+    try std.testing.expectEqualStrings(
+        "Tom &amp; Jerry &lt;&quot;F#&quot;&gt; &apos;x&apos;",
+        escaped,
+    );
+    const plain = try escape(a, "C++");
+    defer a.free(plain);
+    try std.testing.expectEqualStrings("C++", plain);
+}
+
 pub fn fill(
     a: std.mem.Allocator,
     template: []const u8,

@@ -4,7 +4,8 @@ const version = @import("options").version;
 
 const argparse = @import("argparse.zig");
 const glob = @import("glob.zig");
-const templateFill = @import("template.zig").fill;
+const templating = @import("template.zig");
+const templateFill = templating.fill;
 
 const HttpClient = @import("http_client.zig");
 const Statistics = @import("statistics.zig");
@@ -105,7 +106,9 @@ fn overview(
     template: []const u8,
 ) ![]const u8 {
     const a = arena.allocator();
-    return templateFill(a, template, stats);
+    var escaped = stats;
+    escaped.name = try templating.escape(a, stats.name);
+    return templateFill(a, template, escaped);
 }
 
 fn languages(
@@ -123,7 +126,11 @@ fn languages(
         lang_list,
         0..,
     ) |language, count, *progress_s, *lang_s, i| {
-        const color = stats.language_colors.get(language);
+        const color = if (stats.language_colors.get(language)) |c|
+            try templating.escape(a, c)
+        else
+            null;
+        const name = try templating.escape(a, language);
         const percent =
             100 * if (stats.languages_total == 0)
                 0.0
@@ -154,7 +161,7 @@ fn languages(
             \\  <span class="percent">{d:.2}%</span>
             \\</li>
             \\
-        , .{ (i + 1) * 150, color orelse "#000", language, percent });
+        , .{ (i + 1) * 150, color orelse "#000", name, percent });
     }
     return templateFill(
         a,

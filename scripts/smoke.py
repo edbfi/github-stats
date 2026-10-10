@@ -28,7 +28,7 @@ with tempfile.TemporaryDirectory() as directory:
         assert "{{" not in svg.read_text(), "Unresolved template placeholder"
     overview = (output / "overview.svg").read_text()
     languages = (output / "languages.svg").read_text()
-    assert "CI Fixture" in overview
+    assert "CI &amp; &lt;Fixture&gt;" in overview, "The account name must be XML-escaped"
     assert "1,014" in overview, "Contribution total must include all five counters"
     assert "1,200" in overview, "Private repository data must be excluded"
     assert "Zig" in languages and "Python" not in languages

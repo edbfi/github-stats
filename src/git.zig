@@ -47,12 +47,25 @@ pub fn getLinesChanged(
     const repo_path = try std.mem.replaceOwned(u8, allocator, repo, "/", "_");
     const repo_url = try std.fmt.allocPrint(
         allocator,
-        "https://{s}:{s}@github.com/{s}.git",
-        .{ login, token, repo },
+        "https://github.com/{s}.git",
+        .{repo},
+    );
+    // The token goes in a per-command header, never into the URL or the clone's
+    // config (edbfi-ci design/security.md rule 8).
+    const credentials = try std.fmt.allocPrint(allocator, "{s}:{s}", .{ login, token });
+    const encoder = std.base64.standard.Encoder;
+    const encoded = try allocator.alloc(u8, encoder.calcSize(credentials.len));
+    _ = encoder.encode(encoded, credentials);
+    const auth_header = try std.fmt.allocPrint(
+        allocator,
+        "http.extraheader=AUTHORIZATION: basic {s}",
+        .{encoded},
     );
     const clone = try std.process.run(allocator, io, .{
         .argv = &.{
             "git",
+            "-c",
+            auth_header,
             "clone",
             "--bare",
             "--filter=blob:limit=1m",

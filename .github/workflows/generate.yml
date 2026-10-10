@@ -31,7 +31,7 @@ jobs:
           # Any non-PR run of this commit counts (design/ci.md rule 12), so weekly revalidations
           # of an unchanged master don't crowd out the push run.
           result="$(gh run list --workflow ci.yml --branch master --commit "$GITHUB_SHA" --limit 100 --json conclusion,event,status \
-            --jq 'map(select(.event == "push" or .event == "schedule" or .event == "workflow_dispatch")) | first | .status == "completed" and .conclusion == "success"')"
+            --jq 'any(.[]; (.event == "push" or .event == "schedule" or .event == "workflow_dispatch") and .status == "completed" and .conclusion == "success")')"
           test "$result" = true || { echo "::error::no successful push, scheduled or dispatch CI run for $GITHUB_SHA"; exit 1; }
       - name: Verify statistics identity
         env:
@@ -40,6 +40,10 @@ jobs:
           test -n "$GH_TOKEN"
           login="$(gh api user --jq 'select(.id == 326875205 and .login == "edbfi") | .login')"
           test "$login" = edbfi || { echo "::error::STATS_READ_TOKEN does not belong to edbfi"; exit 1; }
+          # The images need the account's emails (commit attribution) and traffic (views);
+          # without them they'd publish quietly wrong numbers.
+          gh api user/emails --silent || { echo "::error::STATS_READ_TOKEN can't read the account's emails"; exit 1; }
+          gh api repos/edbfi/github-stats/traffic/views --silent || { echo "::error::STATS_READ_TOKEN can't read repository traffic"; exit 1; }
       - name: Install Zig
         env:
           ZIG_VERSION: 0.16.0
@@ -97,6 +101,12 @@ jobs:
           auth="$(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 -w0)"
           echo "::add-mask::$auth"
           git -c http.extraheader="AUTHORIZATION: basic $auth" clone -q --depth 1 --single-branch --branch generated --no-tags "$REPO_URL" "$RUNNER_TEMP/generated"
+          # A rerun of an older run must not publish images from superseded code.
+          tip="$(git -c http.extraheader="AUTHORIZATION: basic $auth" ls-remote "$REPO_URL" refs/heads/master | cut -f1)"
+          if [ "$tip" != "$GITHUB_SHA" ]; then
+            echo "::notice::master moved on to $tip; not publishing images from $GITHUB_SHA"
+            exit 0
+          fi
           cp "$RUNNER_TEMP/out/overview.svg" "$RUNNER_TEMP/out/languages.svg" "$RUNNER_TEMP/generated/"
           cd "$RUNNER_TEMP/generated"
           git add -- overview.svg languages.svg
