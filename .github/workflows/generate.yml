@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # Daily SVG generation. This job holds STATS_READ_TOKEN and a contents: write
 # token, so it is privileged (edbfi-ci's privileged_jobs.py): no actions,
-# containers, services or caches; Zig is
-# installed inline with a pinned SHA-256; the repo is fetched with plain git.
+# containers, services or caches; Zig is installed inline with a pinned
+# SHA-256; the repo is fetched with plain git.
 # Bump ZIG_VERSION, ZIG_URL and ZIG_SHA256 together with build.zig.zon's
 # minimum_zig_version (https://ziglang.org/download/index.json, x86_64-linux).
 name: Generate Stats Images
