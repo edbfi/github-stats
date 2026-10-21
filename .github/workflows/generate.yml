@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-# Daily SVG generation (edbfi-ci design/d8.md rule 1). This job holds
-# STATS_READ_TOKEN and a contents: write token, so it is privileged
-# (design/security.md): no actions, containers, services or caches; Zig is
+# Daily SVG generation. This job holds STATS_READ_TOKEN and a contents: write
+# token, so it is privileged (edbfi-ci's privileged_jobs.py): no actions,
+# containers, services or caches; Zig is
 # installed inline with a pinned SHA-256; the repo is fetched with plain git.
 # Bump ZIG_VERSION, ZIG_URL and ZIG_SHA256 together with build.zig.zon's
 # minimum_zig_version (https://ziglang.org/download/index.json, x86_64-linux).
@@ -28,7 +28,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          # Any non-PR run of this commit counts (design/ci.md rule 12), so weekly revalidations
+          # Any non-PR run of this commit counts, so weekly revalidations
           # of an unchanged master don't crowd out the push run.
           result="$(gh run list --workflow ci.yml --branch master --commit "$GITHUB_SHA" --limit 100 --json conclusion,event,status \
             --jq 'any(.[]; (.event == "push" or .event == "schedule" or .event == "workflow_dispatch") and .status == "completed" and .conclusion == "success")')"
@@ -64,7 +64,7 @@ jobs:
           auth="$(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 -w0)"
           echo "::add-mask::$auth"
           git init -q "$RUNNER_TEMP/src"
-          # The header lives only on this command line (design/security.md rule 8).
+          # The header lives only on this command line, never in .git/config.
           git -C "$RUNNER_TEMP/src" -c http.extraheader="AUTHORIZATION: basic $auth" fetch -q --depth 1 --no-tags "$REPO_URL" "$GITHUB_SHA"
           git -C "$RUNNER_TEMP/src" checkout -q --detach FETCH_HEAD
           test "$(git -C "$RUNNER_TEMP/src" rev-parse HEAD)" = "$GITHUB_SHA"
