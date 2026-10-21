@@ -51,7 +51,7 @@ pub fn getLinesChanged(
         .{repo},
     );
     // The token goes in a per-command header, never into the URL or the clone's
-    // config (edbfi-ci design/security.md rule 8).
+    // config.
     const credentials = try std.fmt.allocPrint(allocator, "{s}:{s}", .{ login, token });
     const encoder = std.base64.standard.Encoder;
     const encoded = try allocator.alloc(u8, encoder.calcSize(credentials.len));
