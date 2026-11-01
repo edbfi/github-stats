@@ -2,7 +2,7 @@
 
 This installation generates statistics solely for `edbfi`, from owned repositories
 only. `.github/workflows/generate.yml` regenerates the SVGs daily (and on
-manual dispatch) from the CI-green `master` commit and commits them to the
+manual dispatch) from the CI-green `main` commit and commits them to the
 `generated` branch only when they change. That branch holds only the two SVGs
 and the license; raw statistics stay private. Upstream documentation and
 attribution follow below.
