@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">github-stats logo</title>
+  <desc id="desc">Three ascending bars inside code brackets.</desc>
+  <rect x="8" y="8" width="240" height="240" rx="48" fill="#172554"/>
+  <g fill="none" stroke="#e0f2fe" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 72H40v112h20"/>
+    <path d="M196 72h20v112h-20"/>
+  </g>
+  <rect x="80" y="136" width="24" height="48" rx="6" fill="#38bdf8"/>
+  <rect x="116" y="108" width="24" height="76" rx="6" fill="#7dd3fc"/>
+  <rect x="152" y="72" width="24" height="112" rx="6" fill="#fbbf24"/>
+</svg>
