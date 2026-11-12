@@ -9,6 +9,7 @@
         "build.zig.zon",
         "src",
         "LICENSE",
+        "LICENSE-AGPL",
         "README.md",
     },
 }

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-License-Identifier: AGPL-3.0-or-later
 # Daily SVG generation. This job holds STATS_READ_TOKEN and a contents: write
 # token, so it is privileged (edbfi-ci's privileged_jobs.py): no actions,
 # containers, services or caches; Zig is installed inline with a pinned
