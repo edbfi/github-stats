@@ -1,4 +1,24 @@
-# [GitHub Stats Visualization](https://github.com/jstrieb/github-stats)
+<p align="center">
+  <img src="assets/svg/github-stats-logo.svg" alt="github-stats logo" width="256" height="256">
+</p>
+
+<h1 align="center">github-stats</h1>
+
+<p align="center"><strong>Generate GitHub statistics as theme-aware SVG cards.</strong></p>
+
+<p align="center">
+  <a href="https://github.com/edbfi/github-stats/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-GPL--3.0-blue?style=flat" alt="License: GPL-3.0">
+  </a>
+  <a href="https://codeberg.org/ziglang/zig">
+    <img src="https://img.shields.io/badge/Zig-F7A41D?style=flat&amp;logo=zig&amp;logoColor=white" alt="Zig">
+  </a>
+  <a href="https://github.com/actions/runner" title="GitHub Actions runner source">
+    <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&amp;logo=githubactions&amp;logoColor=white" alt="GitHub Actions">
+  </a>
+</p>
+
+## [GitHub Stats Visualization](https://github.com/jstrieb/github-stats)
 
 This installation generates statistics solely for `edbfi`, from owned repositories
 only. `.github/workflows/generate.yml` regenerates the SVGs daily (and on
