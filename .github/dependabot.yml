@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-License-Identifier: AGPL-3.0-or-later
 # Copy as .github/dependabot.yml; match directories to the CI audit matrices.
 # Zig itself (build.zig.zon minimum_zig_version) has no Dependabot ecosystem: bump it by hand.
 version: 2

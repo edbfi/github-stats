@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/svg/github-stats-logo.svg" alt="github-stats logo" width="256" height="256">
+  <img src="assets/svg/github-stats-logo.svg" alt="github-stats logo" width="160" height="160">
 </p>
 
 <h1 align="center">github-stats</h1>
@@ -8,7 +8,10 @@
 
 <p align="center">
   <a href="https://github.com/edbfi/github-stats/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/License-GPL--3.0-blue?style=flat" alt="License: GPL-3.0">
+    <img src="https://img.shields.io/badge/Upstream-GPL--3.0-blue?style=flat" alt="Upstream license: GPL-3.0">
+  </a>
+  <a href="https://github.com/edbfi/github-stats/blob/main/README.md#licensing">
+    <img src="https://img.shields.io/badge/Owner_additions-AGPL--3.0--or--later-blue?style=flat" alt="Owner additions: AGPL-3.0-or-later">
   </a>
   <a href="https://codeberg.org/ziglang/zig">
     <img src="https://img.shields.io/badge/Zig-F7A41D?style=flat&amp;logo=zig&amp;logoColor=white" alt="Zig">
@@ -319,3 +322,25 @@ remain active and unchanged.
   [anuraghazra/github-readme-stats](https://github.com/anuraghazra/github-readme-stats)
 - Uses [GitHub Octicons](https://primer.style/octicons/) to precisely match the
   GitHub UI
+
+
+## Licensing
+
+This repository derives from [jstrieb/github-stats](https://github.com/jstrieb/github-stats).
+The inherited Zig code, SVG card templates, build files and upstream documentation,
+including modifications to those source and build files, remain under the
+GNU General Public License; the original GPLv3 text is preserved in [LICENSE](LICENSE).
+
+The following independently introduced edbfi material is licensed under the GNU
+Affero General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version
+(`AGPL-3.0-or-later`):
+
+- `.github/` configuration and workflow files and `.pre-commit-config.yaml`
+- `scripts/smoke.py` and `tests/fixtures/stats.json`
+- `assets/svg/github-stats-logo.svg` and the edbfi-authored README additions
+
+The full AGPLv3 text is in [LICENSE-AGPL](LICENSE-AGPL). Existing grants and
+third-party notices remain in effect. Referenced actions, tools, the MIT-licensed
+workflow immortality script and GitHub Octicons retain their respective licenses;
+the AGPL grant above does not relicense them.
