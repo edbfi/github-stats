@@ -19,6 +19,7 @@
   <a href="https://github.com/actions/runner" title="GitHub Actions runner source">
     <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&amp;logo=githubactions&amp;logoColor=white" alt="GitHub Actions">
   </a>
+  <a href="https://github.com/edbfi/github-stats/actions/workflows/ci.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/edbfi/github-stats/ci.yml?branch=main&amp;event=push&amp;label=CI&amp;style=flat" alt="CI"></a>
 </p>
 
 ## [GitHub Stats Visualization](https://github.com/jstrieb/github-stats)
